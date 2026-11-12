@@ -1,0 +1,1839 @@
+/* ========================================================
+   MILESTONESTUDIO - Minimalist Cyberpunk Stylesheet
+======================================================== */
+
+:root {
+    --cyber-green: #00ff66;
+    --cyber-dim: rgba(var(--accent-rgb), 0.12);
+    --cyber-border: rgba(var(--accent-rgb), 0.25);
+
+    --card-bg: rgba(12, 17, 24, 0.82);
+    --card-border: rgba(var(--fg-rgb), 0.07);
+    --card-hover: rgba(18, 25, 36, 0.88);
+
+    --text-pure: #ffffff;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-dim: #545d68;
+
+    --accent-red: #ff4d6d;
+    --accent-blue: #38bdf8;
+    --accent-yellow: #ffb703;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 12px;
+}
+
+/* ========================================
+   테마 변수 (기본: 다크 / html[data-theme="light"]: 라이트)
+======================================== */
+:root {
+    color-scheme: dark;
+    --fg-rgb: 255, 255, 255;          /* 구분선·호버 배경에 쓰는 기본 전경색 */
+    --accent-rgb: 0, 255, 102;        /* 강조(그린) 투명도 조합용 */
+    --page-bg: #06090e;
+    --modal-bg: #0d121a;
+    --field-bg: rgba(0, 0, 0, 0.35);
+    --overlay-bg: rgba(0, 0, 0, 0.75);
+    --on-accent: #06090e;             /* 강조색 배경 위 글자색 */
+    --cyber-green-hover: #00ff88;
+    --accent-private: #a78bfa;        /* 개인 모드 강조색 */
+}
+
+html[data-theme="light"] {
+    color-scheme: light;
+    --cyber-green: #008f3a;
+    --cyber-dim: rgba(0, 143, 58, 0.1);
+    --cyber-border: rgba(0, 143, 58, 0.32);
+
+    --card-bg: rgba(255, 255, 255, 0.82);
+    --card-border: rgba(15, 23, 42, 0.12);
+    --card-hover: rgba(255, 255, 255, 0.96);
+
+    --text-pure: #0f172a;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-dim: #64748b;
+
+    --accent-red: #e11d48;
+    --accent-blue: #0284c7;
+    --accent-yellow: #b45309;
+
+    --fg-rgb: 15, 23, 42;
+    --accent-rgb: 0, 143, 58;
+    --page-bg: #eef2f6;
+    --modal-bg: #ffffff;
+    --field-bg: rgba(15, 23, 42, 0.05);
+    --overlay-bg: rgba(15, 23, 42, 0.45);
+    --on-accent: #ffffff;
+    --cyber-green-hover: #00a844;
+    --accent-private: #7c3aed;
+}
+
+/* 라이트 모드: 그림자는 부드럽게, 셀렉트 화살표 색 조정 */
+html[data-theme="light"] .glass-card {
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme="light"] .modal-card {
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.25);
+}
+
+html[data-theme="light"] .help-tip::after {
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2);
+}
+
+/* ========================================
+   아이콘 확장 (edit / copy / arrow-ccw 아이콘)
+======================================== */
+.icon.edit {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.146-.354'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.146-.354'/%3E%3C/svg%3E");
+}
+
+.icon.copy {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' fill-rule='evenodd' d='M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' fill-rule='evenodd' d='M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z'/%3E%3C/svg%3E");
+}
+
+.icon.arrow-ccw {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' fill-rule='evenodd' d='M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z'/%3E%3Cpath fill='white' d='M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' fill-rule='evenodd' d='M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z'/%3E%3Cpath fill='white' d='M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466'/%3E%3C/svg%3E");
+}
+
+.icon.repeat {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' fill-rule='evenodd' d='M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9'/%3E%3Cpath fill='white' fill-rule='evenodd' d='M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' fill-rule='evenodd' d='M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9'/%3E%3Cpath fill='white' fill-rule='evenodd' d='M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z'/%3E%3C/svg%3E");
+}
+
+.icon.telephone {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' fill-rule='evenodd' d='M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' fill-rule='evenodd' d='M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z'/%3E%3C/svg%3E");
+}
+
+.icon.sun {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707'/%3E%3C/svg%3E");
+}
+
+.icon.help {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16'/%3E%3Cpath fill='white' d='M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16'/%3E%3Cpath fill='white' d='M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94'/%3E%3C/svg%3E");
+}
+
+/* ========================================
+   기본 레이아웃 및 리셋
+======================================== */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--page-bg);
+    color: var(--text-primary);
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    user-select: none;
+}
+
+/* 텍스트 선택 허용 영역 */
+input,
+textarea,
+.item-title,
+.entry-body {
+    user-select: text;
+}
+
+/* 스크롤바 */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(var(--fg-rgb), 0.1);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--accent-rgb), 0.4);
+}
+
+/* ========================================
+   0과 1 매트릭스 캔버스 배경
+======================================== */
+#matrixCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+/* ========================================
+   전체 컨테이너 래퍼
+======================================== */
+.content-wrapper {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    padding: 12px 16px;
+    gap: 12px;
+    max-width: 1720px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* 공통 글래스 카드 */
+.glass-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    transition: border-color 0.2s ease;
+}
+
+/* ========================================
+   1. 상단 헤더 (Header) - 재설계
+======================================== */
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px;
+    height: 64px;
+    flex-shrink: 0;
+    gap: 16px;
+    position: relative;
+    z-index: 5;
+}
+
+/* ── 왼쪽: 브랜드 섹션 (로고 + bar + 아이콘) ── */
+.header-brand-section {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+
+/* 로고 아이콘 + 텍스트 묶음 */
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.logo-icon-svg {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.5));
+}
+
+.logo-text-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.logo-name {
+    font-size: 1.0rem;
+    font-weight: 800;
+    color: var(--text-pure);
+    letter-spacing: 1.5px;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+/* 로고의 M, S 강조 (사이버 그린 + 은은한 글로우) */
+.logo-accent {
+    color: var(--cyber-green);
+    font-size: 1.14em;
+    font-weight: 900;
+    text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.45);
+}
+
+.logo-tagline {
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+/* 세로 구분 Bar */
+.header-bar-divider {
+    width: 1px;
+    height: 32px;
+    background: rgba(var(--fg-rgb), 0.12);
+    flex-shrink: 0;
+}
+
+/* 아이콘 버튼 그룹 */
+.header-icon-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.header-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.header-icon-btn:hover {
+    background: rgba(var(--fg-rgb), 0.07);
+    color: var(--text-secondary);
+}
+
+.header-icon-btn .icon {
+    width: 15px;
+    height: 15px;
+    flex: 0 0 15px;
+}
+
+/* ── 오른쪽: 날씨 + 날짜/시각 + 설정 아이콘 ── */
+.header-right-section {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+
+/* 맨 우측: BOOKMARK + 설정 아이콘 */
+.header-right-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.header-action-btn {
+    width: 34px;
+    height: 34px;
+}
+
+.header-action-btn .icon {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+}
+
+.header-action-btn:hover {
+    color: var(--cyber-green);
+    background: rgba(var(--accent-rgb), 0.08);
+}
+
+/* 패널 제목 옆 작은 아이콘 버튼 (FOOTSTEP: 반복 초기화) */
+.btn-title-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.btn-title-action .icon {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+}
+
+.btn-title-action:hover {
+    color: var(--cyber-green);
+    background: rgba(var(--accent-rgb), 0.08);
+}
+
+/* 자동 내보내기 아이콘: 켜짐(초록) / 주의(노랑: 권한 재승인 필요·오류) */
+.header-backup-btn.active {
+    color: var(--cyber-green);
+    background: rgba(var(--accent-rgb), 0.1);
+}
+
+.header-backup-btn.active:hover {
+    background: rgba(var(--accent-rgb), 0.18);
+}
+
+.header-backup-btn.attention {
+    color: var(--accent-yellow);
+    background: rgba(255, 183, 3, 0.12);
+}
+
+.header-backup-btn.attention:hover {
+    background: rgba(255, 183, 3, 0.2);
+}
+
+/* 자물쇠: 숨김 항목이 표시 중일 때(잠금 해제 상태) 빨간색 강조 */
+.header-lock-btn.active {
+    color: var(--accent-red);
+    background: rgba(255, 77, 109, 0.15);
+}
+
+.header-lock-btn.active:hover {
+    color: var(--accent-red);
+    background: rgba(255, 77, 109, 0.22);
+}
+
+.header-info-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    flex-shrink: 0;
+}
+
+/* 1행: 날씨 아이콘 + 텍스트 */
+.header-weather-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 2행: 날짜 + 시계 */
+.header-datetime-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-time {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--cyber-green);
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(var(--accent-rgb), 0.3);
+}
+
+.header-date {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+}
+
+.weather-icon {
+    font-size: 1.0rem;
+}
+
+.weather-text {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+/* 도시 선택 드롭다운 (설정 모달 · 심플 커스텀 메뉴) */
+.city-dropdown {
+    position: relative;
+}
+
+.city-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--field-bg);
+    border: 1px solid rgba(var(--accent-rgb), 0.22);
+    border-radius: var(--radius-sm);
+    color: var(--cyber-green);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.city-dropdown-trigger:hover {
+    border-color: var(--cyber-green);
+    background-color: rgba(var(--accent-rgb), 0.07);
+}
+
+.city-dropdown-trigger:focus-visible,
+.city-dropdown.is-open .city-dropdown-trigger {
+    border-color: var(--cyber-green);
+    box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.18);
+}
+
+/* ▾ 화살표 (글자색을 따라가므로 다크/라이트 모드 공통) */
+.city-dropdown-caret {
+    flex: 0 0 auto;
+    width: 6px;
+    height: 6px;
+    margin-top: -3px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.18s ease;
+}
+
+.city-dropdown.is-open .city-dropdown-caret {
+    margin-top: 3px;
+    transform: rotate(-135deg);
+}
+
+.city-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 20;
+    max-height: 232px;
+    overflow-y: auto;
+    padding: 4px;
+    background: var(--modal-bg);
+    border: 1px solid var(--cyber-border);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--fg-rgb), 0.25) transparent;
+}
+
+.city-dropdown-menu[hidden] {
+    display: none;
+}
+
+html[data-theme="light"] .city-dropdown-menu {
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2);
+}
+
+/* 지역 구분 제목 (특별시·광역시 / 경기 / ...) */
+.city-group-label {
+    padding: 8px 8px 3px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+    user-select: none;
+}
+
+.city-group-label:first-child {
+    padding-top: 4px;
+}
+
+.city-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+}
+
+.city-option.is-active {
+    background: rgba(var(--accent-rgb), 0.1);
+}
+
+.city-option[aria-selected="true"] {
+    color: var(--cyber-green);
+    font-weight: 700;
+}
+
+.city-option[aria-selected="true"]::after {
+    content: "✓";
+    font-size: 0.75rem;
+}
+
+/* ========================================
+   2. 메인 3열 그리드 (완벽한 대칭 레이아웃)
+======================================== */
+.app-main-grid {
+    display: grid;
+    grid-template-columns: minmax(300px, 1fr) minmax(360px, 1.2fr) minmax(300px, 1fr);
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* 패널 섹션 공통 헤더 */
+.panel-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(var(--fg-rgb), 0.06);
+    flex-shrink: 0;
+}
+
+.section-title-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.section-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+/* 패널 헤더 우측: 총 개수 */
+.panel-count {
+    font-family: "D2Coding", monospace;
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.panel-count span {
+    color: var(--cyber-green);
+    font-weight: 700;
+}
+
+/* 리스트 맨 마지막 + 버튼 (원형, 가로 중앙 정렬) */
+.btn-list-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    flex: 0 0 auto;
+    width: 48px;
+    height: 48px;
+    margin: 2px 0;
+    padding: 0;
+    background: rgba(var(--accent-rgb), 0.05);
+    border: 1px dashed var(--cyber-border);
+    border-radius: 50%;
+    color: var(--cyber-green);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-list-add .icon {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+}
+
+.btn-list-add:hover {
+    background: rgba(var(--accent-rgb), 0.12);
+    border-color: var(--cyber-green);
+}
+
+/* 데이터가 없을 때: + 버튼을 가로/세로 중앙에 */
+.simple-list.is-empty {
+    align-items: center;
+    justify-content: center;
+}
+
+/* ========================================
+   심플 리스트 & 드래그앤드롭 스타일
+======================================== */
+.simple-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
+    padding-right: 2px;
+}
+
+/* 드래그앤드롭 공통 상태 */
+.entry-card,
+.simple-item {
+    cursor: grab;
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.entry-card:active,
+.simple-item:active {
+    cursor: grabbing;
+}
+
+.entry-card.dragging,
+.simple-item.dragging {
+    opacity: 0.35;
+    border: 1px dashed var(--cyber-green) !important;
+    transform: scale(0.98);
+}
+
+.entry-card.drag-over-top,
+.simple-item.drag-over-top {
+    border-top: 2px solid var(--cyber-green) !important;
+}
+
+.entry-card.drag-over-bottom,
+.simple-item.drag-over-bottom {
+    border-bottom: 2px solid var(--cyber-green) !important;
+}
+
+/* MILESTONES · INFOMAPS · BOOKMARKS · CLIPS 공통 카드 */
+.entry-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    background: rgba(var(--fg-rgb), 0.025);
+    border: 1px solid rgba(var(--fg-rgb), 0.05);
+    border-radius: var(--radius-sm);
+}
+
+.entry-card:hover {
+    background: rgba(var(--fg-rgb), 0.05);
+    border-color: rgba(var(--fg-rgb), 0.12);
+}
+
+.entry-card.completed {
+    opacity: 0.55;
+}
+
+.entry-card.completed .entry-title,
+.entry-title.completed-title {
+    text-decoration: line-through;
+    color: var(--text-dim);
+}
+
+.entry-card.secret-card {
+    border-left: 2px solid var(--accent-red);
+    background: rgba(255, 77, 109, 0.03);
+}
+
+.entry-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.entry-title {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--text-pure);
+    word-break: break-all;
+}
+
+.entry-body {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+    line-height: 1.45;
+    word-break: break-all;
+}
+
+.entry-date {
+    font-size: 0.65rem;
+    font-family: "D2Coding", monospace;
+    color: var(--text-dim);
+    margin-top: 2px;
+}
+
+.item-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+    flex-shrink: 0;
+}
+
+.entry-card:hover .item-actions,
+.simple-item:hover .item-actions {
+    opacity: 0.85;
+}
+
+.btn-item-action {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 3px 4px;
+    border-radius: 3px;
+    transition: all 0.15s ease;
+}
+
+.btn-item-action:hover {
+    color: var(--text-primary);
+    background: rgba(var(--fg-rgb), 0.08);
+}
+
+/* 완료 처리 버튼 스타일 */
+.btn-item-action.btn-complete.is-completed {
+    color: var(--cyber-green) !important;
+    background: rgba(var(--accent-rgb), 0.15);
+}
+
+.btn-item-action.btn-complete:hover {
+    color: var(--cyber-green);
+}
+
+/* 반복 버튼 스타일 (반복 FOOTSTEP이면 파란색 활성) */
+.btn-item-action.btn-routine:hover {
+    color: var(--accent-blue);
+}
+
+.btn-item-action.btn-routine.is-routine {
+    color: var(--accent-blue) !important;
+    background: rgba(56, 189, 248, 0.15);
+}
+
+/* 숨김(자물쇠) 버튼 스타일 */
+.btn-item-action.btn-secret:hover {
+    color: var(--accent-red);
+}
+
+.btn-item-action.btn-secret.is-secret {
+    color: var(--accent-red) !important;
+    background: rgba(255, 77, 109, 0.15);
+}
+
+.btn-item-action.btn-delete:hover {
+    color: var(--accent-red) !important;
+}
+
+/* ========================================
+   [가운데] FOOTSTEPS 아이템 스타일
+======================================== */
+.simple-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 11px;
+    background: rgba(var(--fg-rgb), 0.025);
+    border: 1px solid rgba(var(--fg-rgb), 0.05);
+    border-radius: var(--radius-sm);
+}
+
+.simple-item:hover {
+    background: rgba(var(--fg-rgb), 0.05);
+    border-color: rgba(var(--fg-rgb), 0.12);
+}
+
+.simple-item.secret-item {
+    border-left: 2px solid var(--accent-red);
+    background: rgba(255, 77, 109, 0.03);
+}
+
+.simple-item.completed {
+    opacity: 0.5;
+}
+
+.simple-item.completed .item-title {
+    text-decoration: line-through;
+    color: var(--text-dim);
+}
+
+.simple-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid rgba(var(--fg-rgb), 0.25);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    background: var(--field-bg);
+    transition: all 0.15s ease;
+}
+
+.simple-item.completed .simple-checkbox {
+    background: var(--cyber-green);
+    border-color: var(--cyber-green);
+}
+
+.simple-checkbox .icon {
+    display: none;
+    width: 11px;
+    height: 11px;
+    flex: 0 0 11px;
+    background-color: var(--on-accent);
+}
+
+.simple-item.completed .simple-checkbox .icon {
+    display: inline-block;
+}
+
+.item-content-group {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.item-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    word-break: break-all;
+    line-height: 1.35;
+}
+
+.tag-badge-routine {
+    font-size: 0.68rem;
+    font-family: "D2Coding", monospace;
+    color: var(--accent-blue);
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 4px;
+    padding: 1px 5px;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   기한 선택 모달 (Date Picker)
+======================================== */
+.datepicker-modal-card {
+    max-width: 440px;
+}
+
+.datepicker-modal-body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.calendar-nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 12px;
+    flex-shrink: 0;
+}
+
+.cal-nav-btn {
+    background: transparent;
+    border: 1px solid rgba(var(--fg-rgb), 0.08);
+    color: var(--text-secondary);
+    padding: 3px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: all 0.18s ease;
+}
+
+.cal-nav-btn:hover {
+    color: var(--cyber-green);
+    border-color: var(--cyber-green);
+    background: rgba(var(--accent-rgb), 0.08);
+}
+
+.cal-nav-btn:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.cal-month-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-pure);
+    letter-spacing: 0.5px;
+}
+
+.calendar-wrapper {
+    background: var(--field-bg);
+    border: 1px solid rgba(var(--fg-rgb), 0.05);
+    border-radius: var(--radius-sm);
+    padding: 8px 6px;
+    flex-shrink: 0;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(var(--fg-rgb), 0.05);
+}
+
+.calendar-weekdays .sun { color: var(--accent-red); }
+.calendar-weekdays .sat { color: var(--accent-blue); }
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    margin-top: 5px;
+}
+
+.cal-day-cell {
+    position: relative;
+    aspect-ratio: 1.3 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    font-family: "D2Coding", monospace;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    transition: all 0.15s ease;
+}
+
+.cal-day-cell:hover {
+    background: rgba(var(--fg-rgb), 0.08);
+    border-color: rgba(var(--fg-rgb), 0.2);
+}
+
+.cal-day-cell.other-month {
+    color: var(--text-dim);
+    opacity: 0.3;
+}
+
+.cal-day-cell.is-today {
+    border-color: var(--cyber-green);
+    color: var(--cyber-green);
+    font-weight: 700;
+}
+
+.cal-day-cell.is-selected {
+    background: rgba(56, 189, 248, 0.18);
+    border-color: var(--accent-blue);
+    color: var(--text-pure);
+}
+
+.cal-day-cell.sun { color: var(--accent-red); }
+.cal-day-cell.sat { color: var(--accent-blue); }
+
+/* 오늘 이전 날짜는 선택 불가 */
+.cal-day-cell.is-disabled {
+    opacity: 0.22;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.datepicker-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 2px;
+}
+
+.datepicker-hint {
+    font-size: 0.74rem;
+    color: var(--text-dim);
+}
+
+/* FOOTSTEP 모달: 기한 선택 버튼 */
+.modal-date-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--field-bg);
+    border: 1px solid rgba(var(--fg-rgb), 0.12);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.18s ease, color 0.18s ease;
+}
+
+.modal-date-btn .icon {
+    width: 15px;
+    height: 15px;
+    flex: 0 0 15px;
+}
+
+.modal-date-btn:hover {
+    border-color: var(--cyber-green);
+    color: var(--text-primary);
+}
+
+.modal-date-btn.has-value {
+    color: var(--text-pure);
+}
+
+/* FOOTSTEP 기한 표시 및 경고 색상 */
+.footstep-due {
+    font-size: 0.68rem;
+    font-family: "D2Coding", monospace;
+    color: var(--text-dim);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.footstep-due.due-today {
+    color: var(--accent-yellow);
+}
+
+.footstep-due.due-overdue {
+    color: var(--accent-red);
+}
+
+.simple-item.due-today .item-title {
+    color: var(--accent-yellow);
+}
+
+.simple-item.due-overdue .item-title {
+    color: var(--accent-red);
+}
+
+/* ========================================
+   모달창 UI (Modal Overlay & Card)
+======================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--overlay-bg);
+    backdrop-filter: blur(8px);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+/* 모달 레이어 순서 (아래 → 위)
+   999: BOOKMARKS / CLIPS / 설정 모달
+   1100: 통합 입력 모달 · PIN 확인 모달 (설정 모달 위에서도 보여야 함)
+   1200: 기한 선택(달력) 모달 (통합 입력 모달 위) */
+#bookmarkModal,
+#clipsModal,
+#contactModal,
+#walletModal,
+#settingsModal {
+    z-index: 999;
+}
+
+#appModal {
+    z-index: 1100;
+}
+
+#datePickerModal {
+    z-index: 1200;
+}
+
+.modal-card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--modal-bg);
+    border: 1px solid var(--cyber-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(var(--fg-rgb), 0.08);
+}
+
+.modal-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--cyber-green);
+}
+
+.modal-title .icon {
+    width: 15px;
+    height: 15px;
+    flex: 0 0 15px;
+}
+
+.modal-btn-close {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 2px;
+}
+
+.modal-btn-close:hover {
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modal-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-field-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.modal-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+    margin-top: 4px;
+}
+
+.modal-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--cyber-green);
+    cursor: pointer;
+}
+
+.simple-input {
+    width: 100%;
+    background: var(--field-bg);
+    border: 1px solid rgba(var(--fg-rgb), 0.12);
+    color: var(--text-pure);
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    box-sizing: border-box;
+}
+
+.simple-input:focus {
+    outline: none;
+    border-color: var(--cyber-green);
+}
+
+.simple-textarea {
+    width: 100%;
+    background: var(--field-bg);
+    border: 1px solid rgba(var(--fg-rgb), 0.12);
+    color: var(--text-pure);
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    resize: vertical;
+    min-height: 85px;
+    box-sizing: border-box;
+    font-family: inherit;
+    line-height: 1.45;
+}
+
+.simple-textarea:focus {
+    outline: none;
+    border-color: var(--cyber-green);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.btn-modal-cancel {
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid rgba(var(--fg-rgb), 0.1);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.btn-modal-cancel:hover {
+    color: var(--text-primary);
+}
+
+.btn-modal-confirm {
+    padding: 6px 16px;
+    background: var(--cyber-green);
+    color: var(--on-accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-modal-confirm:hover {
+    background: var(--cyber-green-hover);
+}
+
+/* ========================================
+   설정 모달 (도시 선택 / 백업)
+======================================== */
+.settings-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.settings-section + .settings-section {
+    padding-top: 14px;
+    border-top: 1px solid rgba(var(--fg-rgb), 0.08);
+}
+
+.settings-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.settings-btn-row {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-settings-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--field-bg);
+    border: 1px solid var(--cyber-border);
+    color: var(--cyber-green);
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.btn-settings-action:hover {
+    background: var(--cyber-dim);
+    border-color: var(--cyber-green);
+}
+
+.btn-settings-action .icon {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+}
+
+.settings-sublabel {
+    margin-top: 6px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.settings-path-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.settings-path {
+    flex: 1;
+    min-width: 0;
+    padding: 7px 10px;
+    background: var(--field-bg);
+    border: 1px solid rgba(var(--fg-rgb), 0.08);
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.settings-path.has-path {
+    color: var(--text-pure);
+}
+
+.btn-settings-compact {
+    flex: 0 0 auto;
+    padding: 7px 10px;
+}
+
+.btn-settings-action:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.settings-hint {
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: var(--text-dim);
+}
+
+/* ========================================
+   검색창 (MILESTONES / FOOTSTEPS / INFOMAPS / BOOKMARKS / CLIPS)
+======================================== */
+.panel-search {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 8px;
+    margin-bottom: 8px;
+    background: var(--field-bg);
+    border: 1px solid rgba(var(--fg-rgb), 0.08);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    transition: border-color 0.18s ease;
+}
+
+.panel-search:focus-within {
+    border-color: var(--cyber-green);
+}
+
+.panel-search > .icon {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 13px;
+    color: var(--text-dim);
+}
+
+.panel-search-input {
+    flex: 1;
+    min-width: 0;
+    padding: 7px 0;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    outline: none;
+}
+
+.panel-search-input::placeholder {
+    color: var(--text-dim);
+}
+
+.panel-search-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    border-radius: 50%;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.panel-search-clear[hidden] {
+    display: none;
+}
+
+.panel-search-clear .icon {
+    width: 10px;
+    height: 10px;
+    flex: 0 0 10px;
+}
+
+.panel-search-clear:hover {
+    color: var(--cyber-green);
+    background: rgba(var(--accent-rgb), 0.1);
+}
+
+.search-empty-msg {
+    padding: 18px 0 10px;
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+}
+
+.bookmark-modal-body .panel-search,
+.contact-modal-body .panel-search,
+.wallet-modal-body .panel-search,
+.clip-modal-body .panel-search {
+    margin-bottom: 0;
+}
+
+/* ========================================
+   BOOKMARKS 목록 모달
+======================================== */
+.bookmark-modal-card,
+.contact-modal-card,
+.wallet-modal-card,
+.clip-modal-card {
+    max-width: 560px;
+    height: min(640px, 82vh);
+}
+
+.bookmark-modal-body,
+.contact-modal-body,
+.wallet-modal-body,
+.clip-modal-body {
+    flex: 1;
+    min-height: 0;
+}
+
+/* ========================================
+   INFOMAPS 추가/수정 모달: BOOKMARKS·CLIPS 목록 모달과 같은 크기
+======================================== */
+.modal-card.infomap-edit-modal-card {
+    max-width: 560px;
+    height: min(640px, 82vh);
+}
+
+.infomap-edit-modal-card .modal-body {
+    flex: 1;
+    min-height: 0;
+}
+
+.infomap-edit-modal-card .modal-fields {
+    flex: 1;
+    min-height: 0;
+}
+
+.infomap-edit-modal-card .modal-field-row:has(.simple-textarea) {
+    flex: 1;
+    min-height: 0;
+}
+
+.infomap-edit-modal-card .simple-textarea {
+    flex: 1;
+    height: 100%;
+    resize: none;
+}
+
+.modal-title .panel-count {
+    margin-left: 4px;
+    font-weight: 400;
+}
+
+.bookmark-link {
+    color: var(--text-pure);
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.bookmark-link:hover {
+    color: var(--cyber-green);
+    text-decoration: underline;
+}
+
+.contact-phone,
+.wallet-address {
+    font-family: "D2Coding", monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--cyber-green);
+    word-break: break-all;
+    user-select: text;
+}
+
+.bookmark-url {
+    font-family: "D2Coding", monospace;
+    font-size: 0.7rem;
+    color: var(--accent-blue);
+    word-break: break-all;
+}
+
+/* CLIP 카드: 복사 버튼은 항상 보이고, 나머지 액션은 hover 시 표시 */
+.clip-header-right {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.btn-item-action.btn-copy {
+    color: var(--cyber-green);
+}
+
+.btn-item-action.btn-copy:hover {
+    background: rgba(var(--accent-rgb), 0.15);
+}
+
+.btn-item-action.btn-copy.is-copied {
+    color: var(--accent-yellow);
+    background: rgba(255, 183, 3, 0.15);
+}
+
+.clip-content {
+    max-height: 140px;
+    overflow-y: auto;
+}
+
+.entry-card.completed .bookmark-link {
+    text-decoration: line-through;
+}
+
+/* ========================================
+   반응형 모바일 미디어 쿼리
+======================================== */
+@media (max-width: 1024px) {
+    html, body {
+        overflow-y: auto;
+        height: auto;
+    }
+    .content-wrapper {
+        height: auto;
+        min-height: 100vh;
+    }
+    .app-main-grid {
+        grid-template-columns: 1fr;
+    }
+    .panel {
+        height: 520px;
+    }
+}
+
+/* ========================================
+   물음표 도움말 툴팁 (:hover / 키보드 포커스 시 간단 설명 표시)
+======================================== */
+.header-logo,
+.section-title-group,
+.modal-title {
+    position: relative;
+}
+
+.help-tip {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    color: var(--text-dim);
+    cursor: help;
+    outline: none;
+    transition: color 0.18s ease;
+}
+
+/* 헤더의 물음표 토글이 켜져 있을 때만 모든 도움말 아이콘(로고 · 패널 · 모달 제목 옆)을 표시 */
+html[data-help="on"] .help-tip {
+    display: inline-flex;
+}
+
+.help-tip .icon {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+}
+
+.help-tip:hover,
+.help-tip:focus-visible {
+    color: var(--cyber-green);
+}
+
+/* 툴팁 말풍선: 제목 그룹 왼쪽 기준으로 아래에 표시 (패널 밖으로 잘리지 않도록) */
+.help-tip::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: 0;
+    top: calc(100% + 8px);
+    width: max-content;
+    max-width: min(260px, calc(100vw - 48px));
+    padding: 8px 10px;
+    background: var(--modal-bg);
+    border: 1px solid var(--cyber-border);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+    color: var(--text-primary);
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    font-size: 0.74rem;
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: normal;
+    text-align: left;
+    text-transform: none;
+    white-space: normal;
+    word-break: keep-all;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-3px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.help-tip:hover::after,
+.help-tip:focus-visible::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* 헤더 로고 옆 도움말 간격 */
+.header-logo .help-tip {
+    margin-left: 2px;
+}
+
+/* ========================================
+   설정 모달: 전체 초기화 (위험 동작)
+======================================== */
+.btn-settings-danger {
+    background: rgba(255, 77, 109, 0.06);
+    border-color: rgba(255, 77, 109, 0.35);
+    color: var(--accent-red);
+}
+
+.btn-settings-danger:hover {
+    background: rgba(255, 77, 109, 0.15);
+    border-color: var(--accent-red);
+}
+
+/* ========================================
+   헤더: 다크모드 토글 버튼
+======================================== */
+.header-theme-btn:hover {
+    color: var(--accent-yellow);
+    background: rgba(255, 183, 3, 0.1);
+}
+
+/* 라이트 모드 켜짐: 해 아이콘 노란색 강조 */
+.header-theme-btn.active {
+    color: var(--accent-yellow);
+    background: rgba(255, 183, 3, 0.18);
+}
+
+.header-theme-btn.active:hover {
+    background: rgba(255, 183, 3, 0.26);
+}
+
+/* ========================================
+   헤더: 개인(프라이빗) 모드 토글 (사람 아이콘)
+======================================== */
+.header-private-btn:hover {
+    color: var(--accent-private);
+    background: rgba(167, 139, 250, 0.12);
+}
+
+.header-private-btn.active {
+    color: var(--accent-private);
+    background: rgba(167, 139, 250, 0.2);
+}
+
+.header-private-btn.active:hover {
+    background: rgba(167, 139, 250, 0.3);
+}
+
+.private-badge {
+    margin-left: 4px;
+    padding: 2px 7px;
+    font-family: "D2Coding", monospace;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent-private);
+    background: rgba(167, 139, 250, 0.14);
+    border: 1px solid rgba(167, 139, 250, 0.4);
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.private-badge[hidden] {
+    display: none;
+}
+
+/* ========================================
+   목록 최상단 / 최하단 이동 버튼 (물음표 도움말 아이콘 옆)
+======================================== */
+.icon.arrow-bar-up {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M8 10a.5.5 0 0 0 .5-.5V3.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 3.707V9.5a.5.5 0 0 0 .5.5m-7 2.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M8 10a.5.5 0 0 0 .5-.5V3.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 3.707V9.5a.5.5 0 0 0 .5.5m-7 2.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5'/%3E%3C/svg%3E");
+}
+
+.icon.arrow-bar-down {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5M8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5M8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6'/%3E%3C/svg%3E");
+}
+
+.scroll-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    flex: 0 0 auto;
+}
+
+.btn-scroll-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-dim);
+    cursor: pointer;
+    outline: none;
+    transition: color 0.18s ease, background 0.18s ease;
+}
+
+.btn-scroll-nav .icon {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+}
+
+.btn-scroll-nav:hover,
+.btn-scroll-nav:focus-visible {
+    color: var(--cyber-green);
+    background: rgba(var(--accent-rgb), 0.08);
+}
+
+/* ========================================
+   WALLETS 지갑 아이콘 (헤더 버튼 / 모달 제목)
+======================================== */
+.icon.wallet {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5z'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5z'/%3E%3C/svg%3E");
+}
+
+/* ========================================
+   헤더: 도움말(물음표) 표시 토글 (자물쇠 왼쪽)
+======================================== */
+.header-help-btn:hover {
+    color: var(--cyber-green);
+    background: rgba(var(--accent-rgb), 0.08);
+}
+
+/* 켜짐: 모든 물음표 도움말 아이콘이 표시되는 상태 */
+.header-help-btn.active {
+    color: var(--cyber-green);
+    background: rgba(var(--accent-rgb), 0.12);
+}
+
+.header-help-btn.active:hover {
+    background: rgba(var(--accent-rgb), 0.2);
+}

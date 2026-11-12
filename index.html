@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MILESTONESTUDIO</title>
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+    <script>
+        // 저장된 테마를 렌더링 전에 적용 (기본값: dark / 'light'일 때만 라이트 모드)
+        (function () {
+            var theme = "dark";
+            try { if (localStorage.getItem("milestonestudio_theme") === "light") theme = "light"; } catch (e) { }
+            document.documentElement.setAttribute("data-theme", theme);
+            // 저장된 도움말(물음표) 표시 상태도 렌더링 전에 적용 (기본값: 숨김 / 'on'일 때만 표시)
+            try { if (localStorage.getItem("milestonestudio_help_visible") === "on") document.documentElement.setAttribute("data-help", "on"); } catch (e) { }
+        })();
+    </script>
+    <link rel="stylesheet" href="./assets/styles/base.css" />
+    <link rel="stylesheet" href="./assets/styles/icons.css" />
+    <link rel="stylesheet" href="./assets/styles/custom.css" />
+    <script src="./assets/scripts/main.js" defer></script>
+</head>
+
+<body>
+
+    <!-- 0과 1이 흐르는 매트릭스 디지털 레인 배경 -->
+    <canvas id="matrixCanvas"></canvas>
+
+    <div class="content-wrapper">
+
+        <!-- ========================================
+             1. 상단 헤더 (로고 + 아이콘 | 구분선 | 클립/북마크/설정 | 구분선 | 날씨/날짜)
+        ======================================== -->
+        <header class="app-header glass-card">
+
+            <!-- 왼쪽: 로고 텍스트 + bar + 아이콘 그룹 -->
+            <div class="header-brand-section">
+                <!-- 로고 텍스트 + 설명 도움말 -->
+                <div class="header-logo">
+                    <div class="logo-text-group">
+                        <span class="logo-name"><span class="logo-accent">M</span>ILESTONE<span
+                                class="logo-accent">S</span>TUDIO™</span>
+                        <span class="logo-tagline">A MAN'S OPERATING SYSTEM</span>
+                    </div>
+                    <span class="help-tip" tabindex="0" aria-label="MILESTONESTUDIO 설명"
+                        data-tip="전략을 갖고 있는 남자가 가장 무섭습니다. MILESTONESTUDIO™는 남자의 삶을 체계적으로 관리하고 통제하는 시스템입니다. 모든 데이터는 이 브라우저에만 저장됩니다.">
+                        <i class="icon help"></i>
+                    </span>
+                </div>
+
+                <!-- 구분 Bar -->
+                <div class="header-bar-divider"></div>
+
+                <!-- 빠른 아이콘 버튼 그룹 (도움말 물음표 / 숨김 항목 자물쇠 / 자동 내보내기 / 라이트 모드 / 개인 모드 토글) -->
+                <div class="header-icon-group">
+                    <button type="button" class="header-icon-btn header-help-btn" id="btnToggleHelp"
+                        title="도움말 아이콘 꺼짐 (클릭하여 켜기)" aria-pressed="false">
+                        <i class="icon help"></i>
+                    </button>
+                    <button type="button" class="header-icon-btn header-lock-btn" id="btnToggleAllSecrets"
+                        title="숨김 항목 표시 (PIN 필요)">
+                        <i class="icon lock" id="allSecretToggleIcon"></i>
+                    </button>
+                    <button type="button" class="header-icon-btn header-backup-btn" id="btnToggleAutoBackup"
+                        title="자동 내보내기 (클릭하여 설정/켜기)">
+                        <i class="icon database"></i>
+                    </button>
+                    <button type="button" class="header-icon-btn header-theme-btn" id="btnToggleTheme"
+                        title="라이트 모드 꺼짐 (클릭하여 켜기)" aria-pressed="false">
+                        <i class="icon sun"></i>
+                    </button>
+                    <button type="button" class="header-icon-btn header-private-btn" id="btnTogglePrivate"
+                        title="개인 모드 꺼짐 (클릭하여 켜기)" aria-pressed="false">
+                        <i class="icon person"></i>
+                    </button>
+                </div>
+                <span class="private-badge" id="privateBadge" hidden>PRIVATE</span>
+            </div>
+
+            <!-- 오른쪽: CLIPS + BOOKMARKS + 설정 아이콘 | 구분선 | 날씨 + 날짜/시간 (2행 세로 배치, 맨 우측) -->
+            <div class="header-right-section">
+                <!-- CLIPS + BOOKMARKS + 설정 아이콘 -->
+                <div class="header-right-actions">
+                    <button type="button" class="header-icon-btn header-action-btn" id="btnOpenClips" title="CLIPS">
+                        <i class="icon clipboard"></i>
+                    </button>
+                    <button type="button" class="header-icon-btn header-action-btn" id="btnOpenBookmarks"
+                        title="BOOKMARKS">
+                        <i class="icon bookmark"></i>
+                    </button>
+                    <button type="button" class="header-icon-btn header-action-btn" id="btnOpenContacts"
+                        title="CONTACTS">
+                        <i class="icon telephone"></i>
+                    </button>
+                    <button type="button" class="header-icon-btn header-action-btn" id="btnOpenWallets" title="WALLETS">
+                        <i class="icon wallet"></i>
+                    </button>
+                    <button type="button" class="header-icon-btn header-action-btn" id="btnOpenSettings" title="설정">
+                        <i class="icon gear"></i>
+                    </button>
+                </div>
+
+                <!-- 구분 Bar -->
+                <div class="header-bar-divider"></div>
+
+                <!-- 맨 우측: 날씨 + 날짜/시계 -->
+                <div class="header-info-section">
+                    <!-- 1행: 날씨 (도시 선택은 설정 모달에서 변경) -->
+                    <div class="header-weather-row">
+                        <span id="weatherIcon" class="weather-icon">☀️</span>
+                        <span id="weatherInfo" class="weather-text monospace">서울 · --°C</span>
+                    </div>
+                    <!-- 2행: 날짜 + 시계 -->
+                    <div class="header-datetime-row">
+                        <span class="header-date" id="liveDate">2026. 11. 07 (토)</span>
+                        <span class="header-time monospace" id="liveClock">00:00:00</span>
+                    </div>
+                </div>
+            </div>
+
+        </header>
+
+
+        <!-- ========================================
+             2. 메인 3열 패널 (심플 & 미니멀 대칭 구조)
+        ======================================== -->
+        <main class="app-main-grid">
+
+            <!-- ========================================
+                 [왼쪽] MILESTONES (드래그앤드롭 위치 이동 지원)
+            ======================================== -->
+            <section class="panel panel-left glass-card">
+                <div class="panel-section-header">
+                    <div class="section-title-group">
+                        <span class="section-title">MILESTONES</span>
+                        <span class="help-tip" tabindex="0" aria-label="MILESTONES 설명"
+                            data-tip="이루고 싶은 큰 목표(프로젝트)입니다. 완료 처리, 수정, 숨김, 드래그로 순서 변경이 가능합니다. 완료하면 업적이 됩니다.">
+                            <i class="icon help"></i>
+                        </span>
+                        <span class="scroll-nav">
+                            <button type="button" class="btn-scroll-nav" data-scroll-target="milestoneList" data-scroll-dir="top"
+                                title="최상단으로 이동" aria-label="MILESTONES 최상단으로 이동">
+                                <i class="icon arrow-bar-up"></i>
+                            </button>
+                            <button type="button" class="btn-scroll-nav" data-scroll-target="milestoneList" data-scroll-dir="bottom"
+                                title="최하단으로 이동" aria-label="MILESTONES 최하단으로 이동">
+                                <i class="icon arrow-bar-down"></i>
+                            </button>
+                            <button type="button" class="btn-scroll-nav btn-scroll-add" data-add-type="milestone"
+                                title="새 MILESTONE 추가" aria-label="새 MILESTONE 추가">
+                                <i class="icon plus"></i>
+                            </button>
+                        </span>
+                    </div>
+                    <span class="panel-count">총 <span id="milestoneCount">0</span>개</span>
+                </div>
+                <div class="panel-search">
+                    <i class="icon search"></i>
+                    <input type="text" class="panel-search-input" id="milestoneSearch" placeholder="MILESTONES 검색..."
+                        autocomplete="off" />
+                    <button type="button" class="panel-search-clear" id="milestoneSearchClear" title="검색어 지우기" hidden>
+                        <i class="icon close"></i>
+                    </button>
+                </div>
+                <div class="simple-list" id="milestoneList">
+                    <!-- 드래그앤드롭으로 순서 변경 가능한 MILESTONE 카드 목록 -->
+                </div>
+            </section>
+
+
+            <!-- ========================================
+                 [가운데] FOOTSTEPS (전체 목록 / 기한 경고 / 드래그앤드롭 + 숨김 지원)
+            ======================================== -->
+            <section class="panel panel-center glass-card">
+                <div class="panel-section-header">
+                    <div class="section-title-group">
+                        <span class="section-title">FOOTSTEPS</span>
+                        <span class="help-tip" tabindex="0" aria-label="FOOTSTEPS 설명"
+                            data-tip="오늘 해야 할 일을 기한과 함께 관리합니다. 목록의 반복 아이콘으로 매일 체크하는 습관·루틴(반복 FOOTSTEP)을 설정·해제하고, 제목 옆 초기화 아이콘으로 완료 상태를 한 번에 해제할 수 있습니다.">
+                            <i class="icon help"></i>
+                        </span>
+                        <span class="scroll-nav">
+                            <button type="button" class="btn-scroll-nav" data-scroll-target="footstepList" data-scroll-dir="top"
+                                title="최상단으로 이동" aria-label="FOOTSTEPS 최상단으로 이동">
+                                <i class="icon arrow-bar-up"></i>
+                            </button>
+                            <button type="button" class="btn-scroll-nav" data-scroll-target="footstepList" data-scroll-dir="bottom"
+                                title="최하단으로 이동" aria-label="FOOTSTEPS 최하단으로 이동">
+                                <i class="icon arrow-bar-down"></i>
+                            </button>
+                            <button type="button" class="btn-scroll-nav btn-scroll-add" data-add-type="footstep"
+                                title="새 FOOTSTEP 추가" aria-label="새 FOOTSTEP 추가">
+                                <i class="icon plus"></i>
+                            </button>
+                        </span>
+                        <button type="button" class="btn-title-action" id="btnResetRoutines" title="반복 FOOTSTEP 초기화">
+                            <i class="icon arrow-ccw"></i>
+                        </button>
+                    </div>
+                    <span class="panel-count">총 <span id="footstepCount">0</span>개</span>
+                </div>
+                <div class="panel-search">
+                    <i class="icon search"></i>
+                    <input type="text" class="panel-search-input" id="footstepSearch" placeholder="FOOTSTEPS 검색..."
+                        autocomplete="off" />
+                    <button type="button" class="panel-search-clear" id="footstepSearchClear" title="검색어 지우기" hidden>
+                        <i class="icon close"></i>
+                    </button>
+                </div>
+                <div class="simple-list" id="footstepList">
+                    <!-- 드래그앤드롭으로 순서 변경 가능한 FOOTSTEP 목록 -->
+                </div>
+            </section>
+
+
+            <!-- ========================================
+                 [오른쪽] INFOMAPS (드래그앤드롭 위치 이동 지원)
+            ======================================== -->
+            <section class="panel panel-right glass-card">
+                <div class="panel-section-header">
+                    <div class="section-title-group">
+                        <span class="section-title">INFOMAPS</span>
+                        <span class="help-tip" tabindex="0" aria-label="INFOMAPS 설명"
+                            data-tip="아이디어, 메모, 장보기 목록처럼 기록해 두고 싶은 정보를 카드로 저장합니다. 완료 처리, 수정, 숨김, 드래그로 순서 변경이 가능합니다.">
+                            <i class="icon help"></i>
+                        </span>
+                        <span class="scroll-nav">
+                            <button type="button" class="btn-scroll-nav" data-scroll-target="infomapList" data-scroll-dir="top"
+                                title="최상단으로 이동" aria-label="INFOMAPS 최상단으로 이동">
+                                <i class="icon arrow-bar-up"></i>
+                            </button>
+                            <button type="button" class="btn-scroll-nav" data-scroll-target="infomapList" data-scroll-dir="bottom"
+                                title="최하단으로 이동" aria-label="INFOMAPS 최하단으로 이동">
+                                <i class="icon arrow-bar-down"></i>
+                            </button>
+                            <button type="button" class="btn-scroll-nav btn-scroll-add" data-add-type="infomap"
+                                title="새 INFOMAP 작성" aria-label="새 INFOMAP 작성">
+                                <i class="icon plus"></i>
+                            </button>
+                        </span>
+                    </div>
+                    <span class="panel-count">총 <span id="infomapCount">0</span>개</span>
+                </div>
+                <div class="panel-search">
+                    <i class="icon search"></i>
+                    <input type="text" class="panel-search-input" id="infomapSearch" placeholder="INFOMAPS 검색..."
+                        autocomplete="off" />
+                    <button type="button" class="panel-search-clear" id="infomapSearchClear" title="검색어 지우기" hidden>
+                        <i class="icon close"></i>
+                    </button>
+                </div>
+                <div class="simple-list" id="infomapList">
+                    <!-- 드래그앤드롭으로 순서 변경 가능한 INFOMAP 카드 목록 -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+
+    <!-- ========================================
+         BOOKMARKS 목록 모달창 (등록/수정/숨김/삭제, 제목 클릭 시 새 창 이동)
+    ======================================== -->
+    <div class="modal-overlay" id="bookmarkModal" style="display: none;">
+        <div class="modal-card glass-card bookmark-modal-card">
+            <div class="modal-header">
+                <span class="modal-title">
+                    <i class="icon bookmark"></i> BOOKMARKS
+                    <span class="help-tip" tabindex="0" aria-label="BOOKMARKS 설명"
+                        data-tip="자주 가는 웹사이트를 저장해 두고 제목을 눌러 새 창으로 이동합니다. 검색, 수정, 숨김, 삭제를 지원합니다.">
+                        <i class="icon help"></i>
+                    </span>
+                    <span class="scroll-nav">
+                        <button type="button" class="btn-scroll-nav" data-scroll-target="bookmarkList" data-scroll-dir="top"
+                            title="최상단으로 이동" aria-label="BOOKMARKS 최상단으로 이동">
+                            <i class="icon arrow-bar-up"></i>
+                        </button>
+                        <button type="button" class="btn-scroll-nav" data-scroll-target="bookmarkList" data-scroll-dir="bottom"
+                            title="최하단으로 이동" aria-label="BOOKMARKS 최하단으로 이동">
+                            <i class="icon arrow-bar-down"></i>
+                        </button>
+                        <button type="button" class="btn-scroll-nav btn-scroll-add" data-add-type="bookmark"
+                            title="새 BOOKMARK 등록" aria-label="새 BOOKMARK 등록">
+                            <i class="icon plus"></i>
+                        </button>
+                    </span>
+                    <span class="panel-count">총 <span id="bookmarkCount">0</span>개</span>
+                </span>
+                <button type="button" class="modal-btn-close" id="btnCloseBookmarkModal">
+                    <i class="icon close"></i>
+                </button>
+            </div>
+            <div class="modal-body bookmark-modal-body">
+                <div class="panel-search">
+                    <i class="icon search"></i>
+                    <input type="text" class="panel-search-input" id="bookmarkSearch" placeholder="BOOKMARKS 검색..."
+                        autocomplete="off" />
+                    <button type="button" class="panel-search-clear" id="bookmarkSearchClear" title="검색어 지우기" hidden>
+                        <i class="icon close"></i>
+                    </button>
+                </div>
+                <div class="simple-list" id="bookmarkList">
+                    <!-- BOOKMARK 카드 목록 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================
+         CLIPS 목록 모달창 (복사용 텍스트 / 검색 · 완료 · 수정 · 숨김 · 삭제 · 드래그)
+    ======================================== -->
+    <div class="modal-overlay" id="clipsModal" style="display: none;">
+        <div class="modal-card glass-card clip-modal-card">
+            <div class="modal-header">
+                <span class="modal-title">
+                    <i class="icon clipboard"></i> CLIPS
+                    <span class="help-tip" tabindex="0" aria-label="CLIPS 설명"
+                        data-tip="자주 쓰는 문구를 저장해 두고 클릭 한 번으로 복사합니다. 검색, 수정, 숨김, 드래그 정렬을 지원합니다.">
+                        <i class="icon help"></i>
+                    </span>
+                    <span class="scroll-nav">
+                        <button type="button" class="btn-scroll-nav" data-scroll-target="clipList" data-scroll-dir="top"
+                            title="최상단으로 이동" aria-label="CLIPS 최상단으로 이동">
+                            <i class="icon arrow-bar-up"></i>
+                        </button>
+                        <button type="button" class="btn-scroll-nav" data-scroll-target="clipList" data-scroll-dir="bottom"
+                            title="최하단으로 이동" aria-label="CLIPS 최하단으로 이동">
+                            <i class="icon arrow-bar-down"></i>
+                        </button>
+                        <button type="button" class="btn-scroll-nav btn-scroll-add" data-add-type="clip"
+                            title="새 CLIP 등록" aria-label="새 CLIP 등록">
+                            <i class="icon plus"></i>
+                        </button>
+                    </span>
+                    <span class="panel-count">총 <span id="clipCount">0</span>개</span>
+                </span>
+                <button type="button" class="modal-btn-close" id="btnCloseClipsModal">
+                    <i class="icon close"></i>
+                </button>
+            </div>
+            <div class="modal-body clip-modal-body">
+                <div class="panel-search">
+                    <i class="icon search"></i>
+                    <input type="text" class="panel-search-input" id="clipSearch" placeholder="CLIPS 검색..."
+                        autocomplete="off" />
+                    <button type="button" class="panel-search-clear" id="clipSearchClear" title="검색어 지우기" hidden>
+                        <i class="icon close"></i>
+                    </button>
+                </div>
+                <div class="simple-list" id="clipList">
+                    <!-- 복사용 텍스트 카드 목록 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================
+         CONTACTS 목록 모달창 (이름 · 연락처 · 설명 / 검색 · 수정 · 숨김 · 삭제 · 드래그)
+    ======================================== -->
+    <div class="modal-overlay" id="contactModal" style="display: none;">
+        <div class="modal-card glass-card contact-modal-card">
+            <div class="modal-header">
+                <span class="modal-title">
+                    <i class="icon telephone"></i> CONTACTS
+                    <span class="help-tip" tabindex="0" aria-label="CONTACTS 설명"
+                        data-tip="사람과 업체의 이름, 연락처, 설명을 저장해 두는 연락처 목록입니다. 이름 검색, 수정, 숨김, 삭제, 드래그 정렬을 지원합니다.">
+                        <i class="icon help"></i>
+                    </span>
+                    <span class="scroll-nav">
+                        <button type="button" class="btn-scroll-nav" data-scroll-target="contactList" data-scroll-dir="top"
+                            title="최상단으로 이동" aria-label="CONTACTS 최상단으로 이동">
+                            <i class="icon arrow-bar-up"></i>
+                        </button>
+                        <button type="button" class="btn-scroll-nav" data-scroll-target="contactList" data-scroll-dir="bottom"
+                            title="최하단으로 이동" aria-label="CONTACTS 최하단으로 이동">
+                            <i class="icon arrow-bar-down"></i>
+                        </button>
+                        <button type="button" class="btn-scroll-nav btn-scroll-add" data-add-type="contact"
+                            title="새 CONTACT 등록" aria-label="새 CONTACT 등록">
+                            <i class="icon plus"></i>
+                        </button>
+                    </span>
+                    <span class="panel-count">총 <span id="contactCount">0</span>개</span>
+                </span>
+                <button type="button" class="modal-btn-close" id="btnCloseContactModal">
+                    <i class="icon close"></i>
+                </button>
+            </div>
+            <div class="modal-body contact-modal-body">
+                <div class="panel-search">
+                    <i class="icon search"></i>
+                    <input type="text" class="panel-search-input" id="contactSearch" placeholder="CONTACTS 검색 (이름)..."
+                        autocomplete="off" />
+                    <button type="button" class="panel-search-clear" id="contactSearchClear" title="검색어 지우기" hidden>
+                        <i class="icon close"></i>
+                    </button>
+                </div>
+                <div class="simple-list" id="contactList">
+                    <!-- CONTACT 카드 목록 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================
+         WALLETS 목록 모달창 (이름 · 계좌번호/코인 주소 · 설명 / 복사 · 검색 · 수정 · 숨김 · 삭제 · 드래그)
+    ======================================== -->
+    <div class="modal-overlay" id="walletModal" style="display: none;">
+        <div class="modal-card glass-card wallet-modal-card">
+            <div class="modal-header">
+                <span class="modal-title">
+                    <i class="icon wallet"></i> WALLETS
+                    <span class="help-tip" tabindex="0" aria-label="WALLETS 설명"
+                        data-tip="은행 계좌번호나 코인 지갑 주소를 이름과 함께 저장해 두고 복사 버튼으로 바로 복사합니다. 검색, 수정, 숨김, 삭제, 드래그 정렬을 지원합니다. 개인 키·시드 문구 같은 비밀 정보는 저장하지 마세요.">
+                        <i class="icon help"></i>
+                    </span>
+                    <span class="scroll-nav">
+                        <button type="button" class="btn-scroll-nav" data-scroll-target="walletList" data-scroll-dir="top"
+                            title="최상단으로 이동" aria-label="WALLETS 최상단으로 이동">
+                            <i class="icon arrow-bar-up"></i>
+                        </button>
+                        <button type="button" class="btn-scroll-nav" data-scroll-target="walletList" data-scroll-dir="bottom"
+                            title="최하단으로 이동" aria-label="WALLETS 최하단으로 이동">
+                            <i class="icon arrow-bar-down"></i>
+                        </button>
+                        <button type="button" class="btn-scroll-nav btn-scroll-add" data-add-type="wallet"
+                            title="새 WALLET 등록" aria-label="새 WALLET 등록">
+                            <i class="icon plus"></i>
+                        </button>
+                    </span>
+                    <span class="panel-count">총 <span id="walletCount">0</span>개</span>
+                </span>
+                <button type="button" class="modal-btn-close" id="btnCloseWalletModal">
+                    <i class="icon close"></i>
+                </button>
+            </div>
+            <div class="modal-body wallet-modal-body">
+                <div class="panel-search">
+                    <i class="icon search"></i>
+                    <input type="text" class="panel-search-input" id="walletSearch" placeholder="WALLETS 검색..."
+                        autocomplete="off" />
+                    <button type="button" class="panel-search-clear" id="walletSearchClear" title="검색어 지우기" hidden>
+                        <i class="icon close"></i>
+                    </button>
+                </div>
+                <div class="simple-list" id="walletList">
+                    <!-- WALLET 카드 목록 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================
+         통합 입력 모달창 (MILESTONES/FOOTSTEPS/INFOMAPS/CONTACTS/PIN인증)
+    ======================================== -->
+    <div class="modal-overlay" id="appModal" style="display: none;">
+        <div class="modal-card glass-card">
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">추가</span>
+                <button type="button" class="modal-btn-close" id="btnModalClose">
+                    <i class="icon close"></i>
+                </button>
+            </div>
+            <form id="modalForm" class="modal-body">
+                <div id="modalFieldsContainer" class="modal-fields"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" id="btnModalCancel">취소</button>
+                    <button type="submit" class="btn-modal-confirm" id="btnModalConfirm">확인</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ========================================
+         기한 선택 모달창 (FOOTSTEP 등록 시 오늘 이후 날짜를 달력으로 선택)
+    ======================================== -->
+    <div class="modal-overlay" id="datePickerModal" style="display: none;">
+        <div class="modal-card glass-card datepicker-modal-card">
+            <div class="modal-header">
+                <span class="modal-title">
+                    <i class="icon calendar"></i> 기한 선택
+                </span>
+                <button type="button" class="modal-btn-close" id="btnCloseDatePicker">
+                    <i class="icon close"></i>
+                </button>
+            </div>
+            <div class="modal-body datepicker-modal-body">
+                <div class="calendar-nav-bar">
+                    <button type="button" class="cal-nav-btn" id="btnDatePrev">◀</button>
+                    <span class="cal-month-title monospace" id="datePickerTitle">2026. 11</span>
+                    <button type="button" class="cal-nav-btn" id="btnDateNext">▶</button>
+                </div>
+                <div class="calendar-wrapper">
+                    <div class="calendar-weekdays">
+                        <span class="sun">일</span>
+                        <span>월</span>
+                        <span>화</span>
+                        <span>수</span>
+                        <span>목</span>
+                        <span>금</span>
+                        <span class="sat">토</span>
+                    </div>
+                    <div class="calendar-grid" id="datePickerGrid">
+                        <!-- 일자 셀 동적 렌더링 -->
+                    </div>
+                </div>
+                <div class="datepicker-footer">
+                    <span class="datepicker-hint">오늘 이후의 날짜만 선택할 수 있습니다.</span>
+                    <button type="button" class="btn-modal-cancel" id="btnDateClear">기한 해제</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================
+         설정 모달창 (도시 선택 / PIN 설정 / 데이터 내보내기 · 가져오기 / 자동 내보내기 폴더)
+    ======================================== -->
+    <div class="modal-overlay" id="settingsModal" style="display: none;">
+        <div class="modal-card glass-card">
+            <div class="modal-header">
+                <span class="modal-title">
+                    <i class="icon gear"></i> 설정
+                </span>
+                <button type="button" class="modal-btn-close" id="btnCloseSettingsModal">
+                    <i class="icon close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <!-- 날씨 도시 -->
+                <div class="settings-section">
+                    <label class="settings-label" for="cityDropdownTrigger">날씨 도시</label>
+                    <div class="city-dropdown monospace" id="cityDropdown">
+                        <button type="button" class="city-dropdown-trigger" id="cityDropdownTrigger"
+                            aria-haspopup="listbox" aria-expanded="false" aria-controls="cityDropdownMenu">
+                            <span class="city-dropdown-value" id="cityDropdownValue">서울</span>
+                            <span class="city-dropdown-caret" aria-hidden="true"></span>
+                        </button>
+                        <div class="city-dropdown-menu" id="cityDropdownMenu" role="listbox" aria-label="날씨 도시 목록"
+                            hidden>
+                            <!-- main.js에서 CITY_DATA 기준으로 지역별 도시 항목 생성 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PIN 비밀번호 -->
+                <div class="settings-section">
+                    <span class="settings-label">PIN 비밀번호</span>
+                    <div class="settings-path-row">
+                        <span class="settings-path monospace" id="pinStatusText">기본 PIN(0000) 사용 중</span>
+                        <button type="button" class="btn-settings-action btn-settings-compact" id="btnChangePin">PIN
+                            설정</button>
+                    </div>
+                    <p class="settings-hint">
+                        숨김 항목 잠금 해제와 전체 초기화 때 입력하는 번호입니다. 숫자 4~8자리로 설정할 수 있고, 처음에는 기본 PIN(0000)이 사용됩니다.
+                        PIN은 백업 파일에 함께 저장되므로 보관에 유의하세요.
+                    </p>
+                </div>
+
+                <!-- 데이터 백업 -->
+                <div class="settings-section">
+                    <span class="settings-label">데이터 백업</span>
+                    <div class="settings-btn-row">
+                        <button type="button" class="btn-settings-action" id="btnExportData">
+                            <i class="icon download"></i> 내보내기
+                        </button>
+                        <button type="button" class="btn-settings-action" id="btnImportData">
+                            <i class="icon upload"></i> 가져오기
+                        </button>
+                    </div>
+                    <input type="file" id="importFileInput" accept=".json,application/json" hidden />
+                    <p class="settings-hint">
+                        MILESTONES·FOOTSTEPS·INFOMAPS·BOOKMARKS·CLIPS·CONTACTS·WALLETS·PIN·도시 설정을 JSON 파일로 저장하거나 복원합니다.
+                        개인 모드 데이터도 같은 파일에 함께 저장·복원되며, 자동 내보내기도 개인 모드에서 동일하게 작동합니다.
+                        가져오기를 하면 현재 데이터가 파일 내용으로 덮어써집니다.
+                        백업 파일은 암호화되지 않으므로 보관에 유의하세요.
+                    </p>
+
+                    <span class="settings-sublabel">자동 내보내기 폴더 (autobackup.json)</span>
+                    <div class="settings-path-row">
+                        <span class="settings-path monospace" id="autoBackupPathText">설정되지 않음</span>
+                        <button type="button" class="btn-settings-action btn-settings-compact"
+                            id="btnChooseBackupDir">폴더 선택</button>
+                        <button type="button" class="btn-settings-action btn-settings-compact"
+                            id="btnClearBackupDir">해제</button>
+                    </div>
+                    <p class="settings-hint" id="autoBackupStatus"></p>
+                </div>
+
+                <!-- 전체 초기화 (PIN 필요) -->
+                <div class="settings-section settings-danger-section">
+                    <span class="settings-label">전체 초기화</span>
+                    <div class="settings-btn-row">
+                        <button type="button" class="btn-settings-action btn-settings-danger" id="btnResetAllData">
+                            <i class="icon trash"></i> 로컬 스토리지 전체 초기화
+                        </button>
+                    </div>
+                    <p class="settings-hint">
+                        MILESTONES·FOOTSTEPS·INFOMAPS·BOOKMARKS·CLIPS·CONTACTS·WALLETS(개인 모드 데이터 포함)·PIN·도시·자동 내보내기 설정 등 이 브라우저에
+                        저장된 모든 데이터를 삭제하고 처음 상태로 되돌립니다.
+                        PIN 번호 확인이 필요하며, 삭제된 데이터는 복구할 수 없으니 먼저 내보내기로 백업하세요.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
