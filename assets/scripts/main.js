@@ -2766,8 +2766,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const AUTO_BACKUP_UNSUPPORTED_MSG =
         "이 브라우저는 폴더를 지정한 자동 내보내기를 지원하지 않습니다.\nChrome 또는 Edge(데스크톱)에서 사용해 주세요.";
 
+    // Chromium Edge에서 시스템 파일이 포함된 폴더를 선택할 수 없는 경우를 위해
+    // 파일 자체를 고르는 Save File Picker도 지원한다. 기존 디렉터리 핸들도 계속 읽는다.
     const isAutoBackupSupported =
-        typeof window.showDirectoryPicker === "function" && typeof indexedDB !== "undefined";
+        (typeof window.showDirectoryPicker === "function" || typeof window.showSaveFilePicker === "function") &&
+        typeof indexedDB !== "undefined";
 
     const btnToggleAutoBackup = document.getElementById("btnToggleAutoBackup");
     const btnChooseBackupDir = document.getElementById("btnChooseBackupDir");
@@ -2822,11 +2825,11 @@ document.addEventListener("DOMContentLoaded", () => {
             status = "이 브라우저는 폴더 지정 자동 내보내기를 지원하지 않습니다. Chrome 또는 Edge(데스크톱)를 사용해 주세요.";
         } else if (!hasDir) {
             title = "자동 내보내기 (먼저 폴더를 설정해야 합니다)";
-            status = "폴더를 선택한 뒤 헤더의 백업 아이콘을 눌러 켜세요. 문서·바탕화면·다운로드 폴더 자체는 선택할 수 없으니 그 안에 만든 하위 폴더를 지정해 주세요. 보안상 전체 경로는 표시되지 않고 폴더 이름만 표시됩니다.";
+            status = "파일 선택을 누르고 autobackup.json을 저장할 위치를 지정하세요. Edge에서 폴더 선택이 차단되면 파일 선택 방식으로 해당 경로를 지정할 수 있습니다. 보안상 전체 경로는 표시되지 않습니다.";
         } else if (state === "on") {
             const when = autoBackupLastTime ? ` · 마지막 백업 ${formatBackupClock(autoBackupLastTime)}` : "";
             title = `자동 내보내기 켜짐${when} (클릭하여 끄기)`;
-            status = `켜짐${when} · '${autoBackupDirName}' 폴더의 ${AUTO_BACKUP_FILENAME}`;
+            status = `켜짐${when} · '${autoBackupDirName}' 파일로 저장 중`;
         } else if (state === "permission") {
             title = "자동 내보내기: 폴더 접근 권한 재승인이 필요합니다 (클릭하여 승인)";
             status = "폴더 접근 권한 재승인이 필요합니다. 헤더의 백업 아이콘을 눌러 승인해 주세요.";
@@ -2863,7 +2866,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateAutoBackupUI();
     }
 
-    // autobackup.json 을 선택한 폴더에 덮어쓰기
+    // 선택한 파일 또는 폴더에 autobackup.json을 저장한다.
     async function writeAutoBackup() {
         if (!autoBackupEnabled || !autoBackupDirHandle) return;
         if (autoBackupWriting) {
@@ -2877,7 +2880,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 autoBackupNeedsPermission = true;
                 return;
             }
-            const fileHandle = await autoBackupDirHandle.getFileHandle(AUTO_BACKUP_FILENAME, { create: true });
+            const fileHandle = autoBackupDirHandle.kind === "file"
+                ? autoBackupDirHandle
+                : await autoBackupDirHandle.getFileHandle(AUTO_BACKUP_FILENAME, { create: true });
             const writable = await fileHandle.createWritable();
             await writable.write(JSON.stringify(buildBackupPayload(new Date()), null, 2));
             await writable.close();
@@ -2903,16 +2908,24 @@ document.addEventListener("DOMContentLoaded", () => {
         autoBackupTimer = setTimeout(writeAutoBackup, AUTO_BACKUP_DEBOUNCE_MS);
     }
 
-    // 설정 모달: 폴더 선택
+    // 설정 모달: 파일 선택 (Edge의 보호 폴더 선택 제한 우회)
     async function chooseAutoBackupDir() {
         if (!isAutoBackupSupported) {
             alert(AUTO_BACKUP_UNSUPPORTED_MSG);
             return;
         }
         try {
-            const handle = await window.showDirectoryPicker({ id: "milestonestudio-backup", mode: "readwrite" });
+            const handle = typeof window.showSaveFilePicker === "function"
+                ? await window.showSaveFilePicker({
+                    id: "milestonestudio-backup-file",
+                    suggestedName: AUTO_BACKUP_FILENAME,
+                    types: [{ description: "JSON 백업 파일", accept: { "application/json": [".json"] } }]
+                })
+                : await window.showDirectoryPicker({ id: "milestonestudio-backup", mode: "readwrite" });
             autoBackupDirHandle = handle;
-            autoBackupDirName = handle.name || "";
+            autoBackupDirName = handle.kind === "file"
+                ? (handle.name || AUTO_BACKUP_FILENAME).replace(/\\.json$/i, "")
+                : (handle.name || "");
             localStorage.setItem(STORAGE_KEYS.AUTO_BACKUP_DIRNAME, autoBackupDirName);
             autoBackupNeedsPermission = false;
             autoBackupError = "";
@@ -2958,7 +2971,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     try { indexedDB.deleteDatabase(LEGACY_AUTO_BACKUP_DB_NAME); } catch (e) { }
                 }
 
-                if (handle && typeof handle.queryPermission === "function") autoBackupDirHandle = handle;
+                if (handle && typeof handle.queryPermission === "function" &&
+                    (handle.kind === "file" || handle.kind === "directory")) autoBackupDirHandle = handle;
             } catch (e) { }
 
             if (!autoBackupDirHandle) {
@@ -2991,7 +3005,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // 경로가 없으면 먼저 설정하도록 안내
             if (!autoBackupDirHandle) {
-                alert("자동 내보내기 경로가 설정되지 않았습니다.\n설정 > 데이터 백업에서 '폴더 선택'으로 경로를 먼저 설정해 주세요.");
+                alert("자동 내보내기 위치가 설정되지 않았습니다.\n설정 > 데이터 백업에서 '파일 위치 선택'으로 저장할 위치를 먼저 지정해 주세요.");
                 openSettingsModal();
                 return;
             }
