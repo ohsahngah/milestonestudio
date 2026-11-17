@@ -197,53 +197,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ========================================================
-       1. 0과 1이 흐르는 매트릭스 디지털 레인 배경
+       1. 반짝이는 우주 별빛 배경
     ======================================================== */
-    const canvas = document.getElementById("matrixCanvas");
+    const canvas = document.getElementById("starfieldCanvas");
     const ctx = canvas.getContext("2d");
 
-    let width, height, columns;
-    const fontSize = 16;
-    let drops = [];
+    let width, height, stars = [];
 
     function initCanvas() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        columns = Math.floor(width / fontSize);
-
-        const currentDropsLength = drops.length;
-        for (let i = currentDropsLength; i < columns; i++) {
-            drops[i] = 1;
-        }
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const count = Math.min(180, Math.round(width * height / 9000));
+        stars = Array.from({ length: count }, () => ({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 1.5 + 0.35,
+            phase: Math.random() * Math.PI * 2,
+            speed: Math.random() * 0.0015 + 0.0005,
+            warm: Math.random() > 0.28
+        }));
     }
 
     function isLightTheme() {
         return document.documentElement.getAttribute("data-theme") === "light";
     }
 
-    function drawMatrix() {
+    function drawStars(time) {
         const light = isLightTheme();
-        // 잔상 지우기 색 = 페이지 배경색 / 숫자 색 = 테마별 그린
-        ctx.fillStyle = light ? "rgba(238, 242, 246, 0.12)" : "rgba(0, 0, 0, 0.1)";
-        ctx.fillRect(0, 0, width, height);
-
-        ctx.fillStyle = light ? "rgba(0, 143, 58, 0.30)" : "rgba(0, 255, 0, 0.35)";
-        ctx.font = fontSize + "px monospace";
-
-        for (let i = 0; i < columns; i++) {
-            const text = Math.random() > 0.5 ? "1" : "0";
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-            if (drops[i] * fontSize > height && Math.random() > 0.975) {
-                drops[i] = 0;
-            }
-            drops[i]++;
-        }
+        ctx.clearRect(0, 0, width, height);
+        stars.forEach((star) => {
+            const twinkle = 0.45 + (Math.sin(time * star.speed + star.phase) + 1) * 0.275;
+            const alpha = twinkle * (light ? 0.48 : 0.72);
+            const color = light
+                ? (star.warm ? `rgba(139, 95, 18, ${alpha})` : `rgba(45, 112, 154, ${alpha * 0.82})`)
+                : (star.warm ? `rgba(255, 214, 130, ${alpha})` : `rgba(210, 225, 255, ${alpha * 0.72})`);
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            ctx.shadowColor = color;
+            ctx.shadowBlur = star.radius * (light ? 4 : 6);
+            ctx.arc(star.x, star.y, star.radius * (0.75 + twinkle * 0.35), 0, Math.PI * 2);
+            ctx.fill();
+        });
+        ctx.shadowBlur = 0;
+        requestAnimationFrame(drawStars);
     }
 
     window.addEventListener("resize", initCanvas);
     initCanvas();
-    setInterval(drawMatrix, 60);
+    requestAnimationFrame(drawStars);
 
 
     /* ========================================================
@@ -268,7 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 : "라이트 모드 꺼짐 (클릭하여 켜기)";
         }
 
-        // 매트릭스 배경: 이전 테마의 잔상을 지우고 새 배경색으로 다시 시작
+        // 테마 전환 시 별빛 배경을 새 팔레트로 즉시 갱신
         ctx.clearRect(0, 0, width, height);
     }
 
@@ -1555,6 +1562,77 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnExportData = document.getElementById("btnExportData");
     const btnImportData = document.getElementById("btnImportData");
     const importFileInput = document.getElementById("importFileInput");
+    const externalIpAddress = document.getElementById("externalIpAddress");
+    const internalIpAddress = document.getElementById("internalIpAddress");
+    const btnRefreshIp = document.getElementById("btnRefreshIp");
+
+    function isPrivateIPv4(ip) {
+        const octets = ip.split(".").map(Number);
+        if (octets.length !== 4 || octets.some(n => !Number.isInteger(n) || n < 0 || n > 255)) return false;
+        return octets[0] === 10 ||
+            (octets[0] === 172 && octets[1] >= 16 && octets[1] <= 31) ||
+            (octets[0] === 192 && octets[1] === 168);
+    }
+
+    async function findInternalIPv4() {
+        const PeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
+        if (!PeerConnection) return [];
+
+        const peer = new PeerConnection({ iceServers: [] });
+        const addresses = new Set();
+        const gatheringDone = new Promise(resolve => {
+            const finish = () => resolve();
+            peer.addEventListener("icecandidate", event => {
+                if (!event.candidate) return finish();
+                const found = event.candidate.candidate.match(/(?:\d{1,3}\.){3}\d{1,3}/g) || [];
+                found.filter(isPrivateIPv4).forEach(ip => addresses.add(ip));
+            });
+            peer.addEventListener("icegatheringstatechange", () => {
+                if (peer.iceGatheringState === "complete") finish();
+            });
+        });
+
+        try {
+            peer.createDataChannel("ip-check");
+            await peer.setLocalDescription(await peer.createOffer());
+            await Promise.race([gatheringDone, new Promise(resolve => setTimeout(resolve, 2500))]);
+        } finally {
+            peer.close();
+        }
+        return [...addresses];
+    }
+
+    async function refreshIpAddresses() {
+        if (externalIpAddress) externalIpAddress.textContent = "확인 중…";
+        if (internalIpAddress) internalIpAddress.textContent = "확인 중…";
+
+        const externalPromise = (async () => {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 5000);
+            try {
+                const response = await fetch("https://api.ipify.org?format=json", {
+                    cache: "no-store",
+                    signal: controller.signal
+                });
+                if (!response.ok) throw new Error("IP 조회 실패");
+                const data = await response.json();
+                return data.ip || "확인할 수 없음";
+            } catch (e) {
+                return "확인할 수 없음";
+            } finally {
+                clearTimeout(timeout);
+            }
+        })();
+
+        const internalPromise = findInternalIPv4()
+            .catch(() => [])
+            .then(addresses => addresses.length ? addresses.join(" · ") : "숨김 또는 확인 불가");
+        const [external, internal] = await Promise.all([externalPromise, internalPromise]);
+        if (externalIpAddress) externalIpAddress.textContent = external;
+        if (internalIpAddress) internalIpAddress.textContent = internal;
+    }
+
+    if (btnRefreshIp) btnRefreshIp.addEventListener("click", refreshIpAddresses);
 
     const BACKUP_APP_NAME = "MILESTONESTUDIO";
     const BACKUP_VERSION = 1;
@@ -1730,6 +1808,7 @@ document.addEventListener("DOMContentLoaded", () => {
         syncCityDropdown();
         updatePinSettingsUI();
         settingsModal.style.display = "flex";
+        refreshIpAddresses();
     }
 
     function closeSettingsModal() {

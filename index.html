@@ -24,8 +24,8 @@
 
 <body>
 
-    <!-- 0과 1이 흐르는 매트릭스 디지털 레인 배경 -->
-    <canvas id="matrixCanvas"></canvas>
+    <!-- 테마별 밤하늘 별빛과 낮의 은은한 반짝임 -->
+    <canvas id="starfieldCanvas" aria-hidden="true"></canvas>
 
     <div class="content-wrapper">
 
@@ -520,10 +520,10 @@
 
 
     <!-- ========================================
-         설정 모달창 (도시 선택 / PIN 설정 / 데이터 내보내기 · 가져오기 / 자동 내보내기 폴더)
+         설정 모달창 (IP / 도시 / PIN / 데이터 백업)
     ======================================== -->
     <div class="modal-overlay" id="settingsModal" style="display: none;">
-        <div class="modal-card glass-card">
+        <div class="modal-card glass-card settings-modal-card">
             <div class="modal-header">
                 <span class="modal-title">
                     <i class="icon gear"></i> 설정
@@ -533,6 +533,19 @@
                 </button>
             </div>
             <div class="modal-body">
+
+                <!-- IP 주소 -->
+                <div class="settings-section">
+                    <span class="settings-label">나의 IP 주소</span>
+                    <div class="settings-ip-grid">
+                        <span>외부 IP</span><span class="settings-ip-value monospace" id="externalIpAddress">확인 중…</span>
+                        <span>내부 IP</span><span class="settings-ip-value monospace" id="internalIpAddress">확인 중…</span>
+                    </div>
+                    <div class="settings-ip-actions">
+                        <p class="settings-hint">외부 IP는 ipify에서 조회합니다. 내부 IP가 숨겨지면 Chrome·Edge의 WebRTC 로컬 IP 보호를 해제하세요.</p>
+                        <button type="button" class="btn-settings-action btn-settings-compact" id="btnRefreshIp">새로고침</button>
+                    </div>
+                </div>
 
                 <!-- 날씨 도시 -->
                 <div class="settings-section">
@@ -558,10 +571,7 @@
                         <button type="button" class="btn-settings-action btn-settings-compact" id="btnChangePin">PIN
                             설정</button>
                     </div>
-                    <p class="settings-hint">
-                        숨김 항목 잠금 해제와 전체 초기화 때 입력하는 번호입니다. 숫자 4~8자리로 설정할 수 있고, 처음에는 기본 PIN(0000)이 사용됩니다.
-                        PIN은 백업 파일에 함께 저장되므로 보관에 유의하세요.
-                    </p>
+                    <p class="settings-hint">숨김 해제·초기화에 사용합니다. 4~8자리, 기본값 0000. PIN은 백업 파일에 포함됩니다.</p>
                 </div>
 
                 <!-- 데이터 백업 -->
@@ -576,12 +586,7 @@
                         </button>
                     </div>
                     <input type="file" id="importFileInput" accept=".json,application/json" hidden />
-                    <p class="settings-hint">
-                        MILESTONES·FOOTSTEPS·INFOMAPS·BOOKMARKS·CLIPS·CONTACTS·WALLETS·PIN·도시 설정을 JSON 파일로 저장하거나 복원합니다.
-                        개인 모드 데이터도 같은 파일에 함께 저장·복원되며, 자동 내보내기도 개인 모드에서 동일하게 작동합니다.
-                        가져오기를 하면 현재 데이터가 파일 내용으로 덮어써집니다.
-                        백업 파일은 암호화되지 않으므로 보관에 유의하세요.
-                    </p>
+                    <p class="settings-hint">모든 데이터와 설정을 JSON으로 저장·복원합니다. 가져오면 덮어씁니다. 파일은 암호화되지 않습니다.</p>
 
                     <span class="settings-sublabel">자동 내보내기 파일 (autobackup.json)</span>
                     <div class="settings-path-row">
@@ -602,11 +607,7 @@
                             <i class="icon trash"></i> 로컬 스토리지 전체 초기화
                         </button>
                     </div>
-                    <p class="settings-hint">
-                        MILESTONES·FOOTSTEPS·INFOMAPS·BOOKMARKS·CLIPS·CONTACTS·WALLETS(개인 모드 데이터 포함)·PIN·도시·자동 내보내기 설정 등 이 브라우저에
-                        저장된 모든 데이터를 삭제하고 처음 상태로 되돌립니다.
-                        PIN 번호 확인이 필요하며, 삭제된 데이터는 복구할 수 없으니 먼저 내보내기로 백업하세요.
-                    </p>
+                    <p class="settings-hint">PIN 확인 후 브라우저 데이터를 모두 삭제합니다. 실행 전 백업하세요.</p>
                 </div>
 
             </div>
